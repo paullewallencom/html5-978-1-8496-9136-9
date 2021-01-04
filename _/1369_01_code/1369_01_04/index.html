@@ -1,0 +1,20 @@
+<html>
+    <head>
+        <script>
+            window.onload = function(){
+                var canvas = document.getElementById("myCanvas");
+                var context = canvas.getContext("2d");
+				
+                context.lineWidth = 10;
+                context.strokeStyle = "black"; // line color
+                context.moveTo(180, 130);
+                context.bezierCurveTo(150, 10, 420, 10, 420, 180);
+                context.stroke();
+            };
+        </script>
+    </head>
+    <body>
+        <canvas id="myCanvas" width="600" height="250" style="border:1px solid black;">
+        </canvas>
+    </body>
+</html>

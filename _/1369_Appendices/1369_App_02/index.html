@@ -1,0 +1,29 @@
+<!DOCTYPE>
+<html>
+    <head>
+        <style>
+            body {
+                margin: 0px;
+                padding: 0px;
+            }
+            
+            #myCanvas {
+                border: 1px solid #9C9898;
+            }
+        </style>
+        <script>
+            function isCanvasSupported(){
+                return !!document.createElement('canvas').getContext;
+            }
+            
+            window.onload = function(){
+                if (isCanvasSupported()) {
+                    document.write("canvas is supported!");
+                }
+                else {
+                    docment.write("canvas is not supported... drats.");
+                }
+            };
+        </script>
+    </head>
+</html>

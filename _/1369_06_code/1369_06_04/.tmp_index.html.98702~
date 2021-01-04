@@ -1,0 +1,109 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <script src="events.js">
+        </script>
+        <script>
+            function writeMessage(context, message){
+                context.font = "18pt Calibri";
+                context.fillStyle = "black";
+                context.fillText(message, 10, 25);
+            }
+            
+            /*
+             * loads the images and then calls the callback function
+             * with a hash of image objects  when the images have loaded
+             */
+            function loadImages(sources, callback){
+                var loadedImages = 0;
+                var numImages = 0;
+                var images = {};
+                // get num of sources
+                for (var src in sources) {
+                    numImages++;
+                }
+				// load images
+                for (var src in sources) {
+                    images[src] = new Image();
+                    images[src].onload = function(){
+						// call callback function when images
+						// have loaded
+                        if (++loadedImages >= numImages) {
+                            callback(images);
+                        }
+                    };
+                    images[src].src = sources[src];
+                }
+            }
+            
+            function drawImages(images){
+                var events = new Events("myCanvas");
+                var canvas = events.getCanvas();
+                var context = events.getContext();
+                var message = "";
+				
+                events.setDrawStage(function(){
+					this.clear();
+					
+                    this.beginRegion();
+                    
+                    context.drawImage(images.challengerImg, 50, 70, 240, 143);
+                    // draw rectangular region for image
+                    context.beginPath();
+                    context.rect(50, 70, 240, 143);
+                    context.closePath();
+                    
+                    this.addRegionEventListener("mouseover", function(){
+                        message = "Dodge Challenger mouseover!";
+                    });
+                    this.addRegionEventListener("mouseout", function(){
+                        message = "Dodge Challenger mouseout!";
+                    });
+                    this.addRegionEventListener("mousedown", function(){
+                        message = "Dodge Challenger mousedown!";
+                    });
+                    this.addRegionEventListener("mouseup", function(){
+                        message = "Dodge Challenger mouseup!";
+                    });
+                    this.closeRegion();
+                    
+                    this.beginRegion();
+                    context.drawImage(images.cobraImg, 350, 50, 200, 150);
+                    // draw rectangular region for image
+                    context.beginPath();
+                    context.rect(350, 50, 200, 150);
+                    context.closePath();
+                    
+                    this.addRegionEventListener("mouseover", function(){
+                        message = "AC Cobra mouseover!";
+                    });
+                    this.addRegionEventListener("mouseout", function(){
+                        message = "AC Cobra mouseout!";
+                    });
+                    this.addRegionEventListener("mousedown", function(){
+                        message = "AC Cobra mousedown!";
+                    });
+                    this.addRegionEventListener("mouseup", function(){
+                        message = "AC Cobra mouseup!";
+                    });
+                    this.closeRegion();
+                    
+                    writeMessage(context, message);
+                });
+            }
+            
+            window.onload = function(){
+                var sources = {
+                    challengerImg: "challenger.jpg",
+                    cobraImg: "cobra.jpg"
+                };
+                
+                loadImages(sources, drawImages);
+            };
+        </script>
+    </head>
+    <body>
+        <canvas id="myCanvas" width="600" height="250" style="border:1px solid black;">
+        </canvas>
+    </body>
+</html>

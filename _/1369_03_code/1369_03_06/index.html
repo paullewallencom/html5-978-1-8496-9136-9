@@ -1,0 +1,52 @@
+<!DOCTYPE HTML> 
+<html>
+    <head>
+        <script>
+window.requestAnimFrame = (function(callback){
+    return window.requestAnimationFrame ||
+    window.webkitRequestAnimationFrame ||
+    window.mozRequestAnimationFrame ||
+    window.oRequestAnimationFrame ||
+    window.msRequestAnimationFrame ||
+    function(callback){
+        window.setTimeout(callback, 1000 / 60);
+    };
+})();
+
+function drawFrame(canvas, context, video){
+    context.drawImage(video, 0, 0);
+    
+    var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+    var data = imageData.data;
+    
+    for (var i = 0; i < data.length; i += 4) {
+        data[i] = 255 - data[i]; // red
+        data[i + 1] = 255 - data[i + 1]; // green
+        data[i + 2] = 255 - data[i + 2]; // blue
+        // i+3 is alpha (the fourth element)
+    }
+    
+    // overwrite original image
+    context.putImageData(imageData, 0, 0);
+    
+    requestAnimFrame(function(){
+        drawFrame(canvas, context, video);
+    });
+}
+
+window.onload = function(){
+    var canvas = document.getElementById("myCanvas");
+    var context = canvas.getContext("2d");
+    var video = document.getElementById("myVideo");
+    drawFrame(canvas, context, video);
+};
+        </script>
+    </head>
+    <body>
+<video id="myVideo" autoplay="true" loop="true" style="display:none;">
+    <source src="BigBuckBunny_640x360.ogv" type="video/ogg"/><source src="BigBuckBunny_640x360.mp4" type="video/mp4"/>
+</video>
+<canvas id="myCanvas" width="640" height="360" style="border:1px solid black;">
+</canvas>
+    </body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE HTML> 
+<html>
+    <head>
+        <script>
+            function drawSpade(context, x, y, width, height){
+				context.save();
+                context.fillStyle = "black";
+                
+                var bottomWidth = width * 0.7;
+                var topHeight = height * 0.7;
+                var bottomHeight = height * 0.3;
+                
+                context.beginPath();
+                context.moveTo(x, y);
+                
+                // top left of spade          
+                context.bezierCurveTo(
+					x, 					// control point 1 x
+					y + topHeight / 2, 	// control point 1 y
+					x - width / 2, 		// control point 2 x
+					y + topHeight / 2, 	// control point 2 y
+					x - width / 2, 		// end point x
+					y + topHeight		// end point y
+				);
+                
+                // bottom left of spade
+                context.bezierCurveTo(
+					x - width / 2, 			// control point 1 x
+					y + topHeight * 1.3, 	// control point 1 y
+					x, 						// control point 2 x
+					y + topHeight * 1.3, 	// control point 2 y
+					x, 						// end point x
+					y + topHeight			// end point y
+				);
+                
+                // bottom right of spade
+                context.bezierCurveTo(
+					x, 						// control point 1 x
+					y + topHeight * 1.3, 	// control point 1 y
+					x + width / 2, 			// control point 2 x
+					y + topHeight * 1.3, 	// control point 2 y
+					x + width / 2, 			// end point x
+					y + topHeight			// end point y
+				);
+                
+                // top right of spade
+                context.bezierCurveTo(
+					x + width / 2, 		// control point 1 x
+					y + topHeight / 2, 	// control point 1 y
+					x, 					// control point 2 x
+					y + topHeight / 2, 	// control point 2 y
+					x,					// end point x 
+					y					// end point y
+				);
+				
+                context.closePath();
+                context.fill();
+                
+                // bottom of spade
+                context.beginPath();
+                context.moveTo(x, y + topHeight);
+                context.quadraticCurveTo(
+					x, 								// control point x
+					y + topHeight + bottomHeight, 	// control point y
+					x - bottomWidth / 2, 			// end point x
+					y + topHeight + bottomHeight	// end point y
+				);
+                context.lineTo(x + bottomWidth / 2, y + topHeight + bottomHeight);
+                context.quadraticCurveTo(
+					x, 								// control point x
+					y + topHeight + bottomHeight, 	// control point y
+					x, 								// end point x
+					y + topHeight					// end point y
+				);
+                context.closePath();
+                context.fill();
+				context.restore();
+            }
+            
+            window.onload = function(){
+                // drawing canvas and context
+                var canvas = document.getElementById("myCanvas");
+                var context = canvas.getContext("2d");
+                
+                // draw spade
+                var spadeX = canvas.width / 2;
+                var spadeY = 20;
+                var spadeWidth = 140;
+                var spadeHeight = 200;
+                
+                // draw spade in center of canvas
+                drawSpade(context, spadeX, spadeY, spadeWidth, spadeHeight);
+                
+                // copy right half of the spade and then paste it 
+                // on the canvas to the left of the spade
+                context.drawImage(
+					canvas, 				
+					spadeX, 				// source x
+					spadeY, 				// source y
+					spadeWidth / 2, 		// source width
+					spadeHeight, 			// source height
+					spadeX - spadeWidth,	// dest x
+					spadeY, 				// dest y
+					spadeWidth / 2, 		// dest width
+					spadeHeight				// dest height
+				);
+                
+                // copy left half of the spade and then paste it 
+                // on the canvas to the right of the spade
+                context.drawImage(
+					canvas, 
+					spadeX - spadeWidth / 2,	// source x	 
+					spadeY, 					// source y
+					spadeWidth / 2, 			// source width
+					spadeHeight, 				// source height
+					spadeX + spadeWidth / 2, 	// dest x
+					spadeY, 					// dest y
+					spadeWidth / 2, 			// dest width
+					spadeHeight					// dest height
+				);
+            };
+        </script>
+    </head>
+    <body>
+        <canvas id="myCanvas" width="600" height="250" style="border:1px solid black;">
+        </canvas>
+    </body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <script src="animation.js">
+        </script>
+        <script>
+            function getRandColor(){
+                var colors = ["red", "orange", "yellow", "green", "blue", "violet"];
+                return colors[Math.floor(Math.random() * colors.length)];
+            }
+            
+            function getRandTheta(){
+                return Math.random() * 2 * Math.PI;
+            }
+            
+            function updateMicrobs(anim, microbs){
+                var canvas = anim.getCanvas();
+                var angleVariance = 0.2;
+                
+                for (var i = 0; i < microbs.length; i++) {
+                    var microb = microbs[i];
+                    
+                    var headX = microb.headX;
+                    var headY = microb.headY;
+                    var segments = microb.segments;
+                    
+                    // get current head position of snake
+                    if (segments.length > 0) {
+                        headX = segments[segments.length - 1].x;
+                        headY = segments[segments.length - 1].y;
+                        headAngle = segments[segments.length - 1].angle;
+                    }
+                    else {
+                        segments.push({
+                            x: canvas.width / 2,
+                            y: canvas.height / 2,
+                            angle: 0
+                        });
+                        headX = canvas.width / 2;
+                        headY = canvas.height / 2;
+                        headAngle = getRandTheta();
+                    }
+                    
+                    // create new head segment
+                    var dist = anim.getTimeInterval() / 10;
+                    var newHeadAngle = headAngle + ((angleVariance / 2) - Math.random() * angleVariance);
+                    
+                    var newHeadX = headX + dist * Math.cos(newHeadAngle);
+                    var newHeadY = headY + dist * Math.sin(newHeadAngle);
+                    
+                    // change direction if collision occurs
+                    if (newHeadX >= canvas.width || newHeadX <= 0 || newHeadY >= canvas.height || newHeadY <= 0) {
+                        newHeadAngle += Math.PI / 2;
+                    }
+                    
+                    segments.push({
+                        x: newHeadX,
+                        y: newHeadY,
+                        angle: newHeadAngle
+                    });
+                    
+                    // remove tail segment
+                    if (segments.length > 20) {
+                        segments.splice(0, 1);
+                    }
+                }
+            }
+            
+            function drawMicrobs(anim, microbs){
+                var context = anim.getContext();
+                
+                for (var i = 0; i < microbs.length; i++) {
+                    var microb = microbs[i];
+                    
+                    var headX = microb.headX;
+                    var headY = microb.headY;
+                    var segments = microb.segments;
+                    context.beginPath();
+                    context.moveTo(segments[0].x, segments[0].y);
+                    
+                    for (var n = 1; n < segments.length; n++) {
+                        var segment = segments[n];
+                        context.lineTo(segment.x, segment.y);
+                    }
+                    
+                    context.lineWidth = 10;
+                    context.lineCap = "round";
+                    context.lineJoin = "round";
+                    context.strokeStyle = microb.color;
+                    context.stroke();
+                }
+            }
+            
+            window.onload = function(){
+                var anim = new Animation("myCanvas");
+                var canvas = anim.getCanvas();
+                var context = anim.getContext();
+                
+                // init microbs
+                var microbs = [];
+                for (var n = 0; n < 100; n++) {
+                    // each microb will be an array of segments
+                    microbs[n] = {
+                        headX: 0,
+                        headY: 0,
+                        segments: [],
+                        color: getRandColor()
+                    };
+                }
+                
+                anim.setDrawStage(function(){
+                    // update
+                    updateMicrobs(this, microbs);
+                    
+                    // clear
+                    this.clear();
+                    
+                    // draw
+                    drawMicrobs(this, microbs);
+                });
+                
+                anim.start();
+            };
+        </script>
+    </head>
+    <body>
+        <canvas id="myCanvas" width="600" height="250" style="border:1px solid black;">
+        </canvas>
+    </body>
+</html>

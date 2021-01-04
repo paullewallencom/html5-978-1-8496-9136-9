@@ -1,0 +1,20 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <script src="events.js">
+        </script>
+        <script>
+            window.onload = function(){
+                var events = new Events("myCanvas");
+                var canvas = events.getCanvas();
+				var context = events.getContext();
+				
+                // do stuff here
+            };
+        </script>
+    </head>
+    <body>
+        <canvas id="myCanvas" width="600" height="250" style="border:1px solid black;">
+        </canvas>
+    </body>
+</html>

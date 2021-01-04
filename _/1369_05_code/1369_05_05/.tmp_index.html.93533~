@@ -1,0 +1,53 @@
+<!DOCTYPE HTML> 
+<html>
+    <head>
+        <script src="animation.js">
+        </script>
+        <script>
+            window.onload = function(){
+                // instantiate new animation object
+                var anim = new Animation("myCanvas");
+                var context = anim.getContext();
+                var canvas = anim.getCanvas();
+                
+                // set drawStage method
+                anim.setDrawStage(function(){
+                    // update
+                    var widthScale = Math.sin(this.getTime() / 200) * 0.1 + 0.9;
+                    var heightScale = -1 * Math.sin(this.getTime() / 200) * 0.1 + 0.9;
+                    
+                    // clear
+                    this.clear();
+                    
+                    //draw
+                    context.beginPath();
+                    context.save();
+                    context.translate(canvas.width / 2, canvas.height / 2);
+                    context.scale(widthScale, heightScale);
+                    context.arc(0, 0, 65, 0, 2 * Math.PI, false);
+                    context.restore();
+                    context.fillStyle = "#8ED6FF";
+                    context.fill();
+                    context.lineWidth = 2;
+                    context.strokeStyle = "#555";
+                    context.stroke();
+                    
+                    context.beginPath();
+                    context.save();
+                    context.translate(canvas.width / 2, canvas.height / 2);
+                    context.scale(widthScale, heightScale);
+                    context.arc(-30, -30, 15, 0, 2 * Math.PI, false);
+                    context.restore();
+                    context.fillStyle = "white";
+                    context.fill();
+                });
+                
+                anim.start();
+            };
+        </script>
+    </head>
+    <body>
+        <canvas id="myCanvas" width="600" height="250" style="border:1px solid black;">
+        </canvas>
+    </body>
+</html>

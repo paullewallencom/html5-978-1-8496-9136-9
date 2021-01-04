@@ -1,0 +1,83 @@
+<!DOCTYPE>
+<html>
+    <head>
+        <style>
+            body {
+                margin: 0px;
+                padding: 0px;
+            }
+            
+            #myCanvas {
+                border: 1px solid #9C9898;
+            }
+        </style>
+        <script>
+            function getCanvasSupport(){
+                // initialize return object
+                var returnObj = {
+                    canvas: false,
+                    webgl: false,
+                    context_2d: false,
+                    context_webgl: false,
+                    context_experimental_webgl: false,
+                    context_moz_webgl: false,
+                    context_webkit_3d: false
+                };
+                
+                // check if canvas is supported
+                if (!!document.createElement('canvas').getContext) {
+                    returnObj.canvas = true;
+                }
+                
+                // check if WebGL rendering context is supported
+                if (window.WebGLRenderingContext) {
+                    returnObj.webgl = true;
+                }
+                
+                // check specific contexts
+                var contextMapping = {
+                    context_2d: "2d",
+                    context_webgl: "webgl",
+                    context_experimental_webgl: "experimental-webgl",
+                    context_moz_webgl: "moz-webgl",
+                    context_webkit_3d: "webkit-3d"
+                };
+                
+                for (var key in contextMapping) {
+                    try {
+                        if (!!document.createElement('canvas').getContext(contextMapping[key])) {
+                            returnObj[key] = true;
+                        }
+                    } 
+                    catch (e) {
+                    }
+                }
+                
+                return returnObj;
+            }
+            
+            function showSupport(obj){
+                var str = "";
+                
+                str += "-- General Support --<br>";
+                str += "canvas: " + (obj.canvas ? "YES" : "NO") + "<br>";
+                str += "webgl: " + (obj.webgl ? "YES" : "NO") + "<br>";
+                
+                str += "<br>-- Successfully Initialized Contexts --<br>";
+                str += "2d: " + (obj.context_2d ? "YES" : "NO") + "<br>";
+                str += "webgl: " + (obj.context_webgl ? "YES" : "NO") + "<br>";
+                str += "experimental-webgl: " + (obj.context_experimental_webgl ? "YES" : "NO") + "<br>";
+                str += "moz-webgl: " + (obj.context_moz_webgl ? "YES" : "NO") + "<br>";
+                str += "webkit-3d: " + (obj.context_webkit_3d ? "YES" : "NO") + "<br>";
+                
+                document.write(str);
+            }
+            
+            window.onload = function(){
+                showSupport(getCanvasSupport());
+            };
+        </script>
+    </head>
+    <body>
+    </body>
+</html>

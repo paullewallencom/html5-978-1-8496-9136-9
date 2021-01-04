@@ -1,0 +1,35 @@
+<html>
+    <head>
+        <script>
+            window.onload = function(){
+                var canvas = document.getElementById("myCanvas");
+                var context = canvas.getContext("2d");
+                
+                // draw rectangle
+                context.beginPath();
+                context.rect(150, 30, 130, 130);
+                context.fillStyle = "blue";
+                context.fill();
+                
+                // wrap circle drawing code with save-restore combination
+                context.save();
+                context.globalAlpha = 0.5; // set global alpha
+                context.beginPath();
+                context.arc(canvas.width / 2, canvas.height / 2, 70, 0, 2 * Math.PI, false);
+                context.fillStyle = "red";
+                context.fill();
+                context.restore();
+                
+                // draw another rectangle
+                context.beginPath();
+                context.rect(canvas.width - (150 + 130), canvas.height - (30 + 130), 130, 130);
+                context.fillStyle = "green";
+                context.fill();
+            };
+        </script>
+    </head>
+    <body>
+        <canvas id="myCanvas" width="600" height="250" style="border:1px solid black;">
+        </canvas>
+    </body>
+</html>

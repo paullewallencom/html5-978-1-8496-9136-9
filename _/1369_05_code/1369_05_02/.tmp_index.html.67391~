@@ -1,0 +1,59 @@
+<html>
+<head>
+<script src="animation.js"></script>
+<script>
+
+function Rectangle(x, y, width, height, borderWidth) {
+	this.x=x;
+	this.y=y;
+	this.width = width;
+	this.height = height;
+	this.borderWidth = borderWidth;
+}
+
+window.onload = function() {
+	var canvas=document.getElementById("myCanvas");
+	// instantiate new animation object
+	var myAnimation = new Animation(canvas, 75);
+	
+	var linearSpeed = 100; // pixels / second
+	var linearDistEachFrame = linearSpeed * 
+		myAnimation.getTimeInterval() / 1000;	
+	var myRectangle = new Rectangle (0,canvas.height/2-25,100,50,5);
+		
+	myAnimation.setUpdateStage(function() {
+		var currentX = myRectangle.x;
+		
+		if (currentX < canvas.width - myRectangle.width - 
+			myRectangle.borderWidth/2) {
+			var newX = currentX + linearDistEachFrame;
+			myRectangle.x = newX;
+		}	
+		else {
+			myAnimation.stop();
+		}
+	});
+	
+	myAnimation.setDrawStage(function() {
+		var context = myAnimation.getContext();
+		context.beginPath();
+		context.rect(myRectangle.x,myRectangle.y,
+			myRectangle.width,myRectangle.height);
+	 
+		context.fillStyle="#8ED6FF";
+		context.fill();
+		context.lineWidth=myRectangle.borderWidth;
+		context.strokeStyle="black"; 
+		context.stroke();		
+	});
+	
+	myAnimation.start();
+}
+
+</script>
+</head>
+<body>
+	<canvas id="myCanvas" width="638" height="250" 
+		style="border:1px solid black;"></canvas>
+</body>
+</html>

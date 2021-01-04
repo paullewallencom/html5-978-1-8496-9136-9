@@ -1,0 +1,45 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <script src="events.js">
+        </script>
+        <script>
+            function writeMessage(context, message){
+                context.font = "18pt Calibri";
+                context.fillStyle = "black";
+                context.fillText(message, 10, 25);
+            }
+            
+            window.onload = function(){
+                var events = new Events("myCanvas");
+                var canvas = events.getCanvas();
+                var context = events.getContext();
+                
+                canvas.addEventListener("mouseout", function(){
+                    events.clear();
+                    writeMessage(context, "Mouseover me!");
+                }, false);
+                
+                canvas.addEventListener("mousemove", function(){
+                    var mousePos = events.getMousePos();
+                    events.clear();
+					
+                    if (mousePos !== null) {
+                        message = "Mouse position: " + mousePos.x + "," + mousePos.y;
+                        writeMessage(context, message);
+                    }
+                }, false);
+                
+				// if we don't set the draw stage function,
+				// we'll have to manually start listening for events
+                events.listen();
+				
+                writeMessage(context, "Mouseover me!");
+            };
+        </script>
+    </head>
+    <body>
+        <canvas id="myCanvas" width="600" height="250" style="border:1px solid black;">
+        </canvas>
+    </body>
+</html>

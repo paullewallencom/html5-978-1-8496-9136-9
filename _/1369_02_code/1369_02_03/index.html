@@ -1,0 +1,27 @@
+<html>
+    <head>
+        <script>
+            window.onload = function(){
+                var canvas = document.getElementById("myCanvas");
+                var context = canvas.getContext("2d");
+                
+                // draw rectangle
+                context.beginPath();
+                context.rect(240, 30, 130, 130);
+                context.fillStyle = "blue";
+                context.fill();
+                
+                // draw circle
+                context.globalAlpha = 0.5; // set global alpha
+                context.beginPath();
+                context.arc(359, 150, 70, 0, 2 * Math.PI, false);
+                context.fillStyle = "red";
+                context.fill();
+            };
+        </script>
+    </head>
+    <body>
+        <canvas id="myCanvas" width="600" height="250" style="border:1px solid black;">
+        </canvas>
+    </body>
+</html>

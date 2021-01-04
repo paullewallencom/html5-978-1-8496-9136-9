@@ -1,0 +1,20 @@
+<html>
+    <head>
+        <script>
+            window.onload = function(){
+                var canvas = document.getElementById("myCanvas");
+                var context = canvas.getContext("2d");
+                
+                context.lineWidth = 10;
+                context.strokeStyle = "black"; // line color
+                context.moveTo(100, canvas.height - 50);
+                context.quadraticCurveTo(canvas.width / 2, -50, canvas.width - 100, canvas.height - 50);
+                context.stroke();
+            };
+        </script>
+    </head>
+    <body>
+        <canvas id="myCanvas" width="600" height="250" style="border:1px solid black;">
+        </canvas>
+    </body>
+</html>

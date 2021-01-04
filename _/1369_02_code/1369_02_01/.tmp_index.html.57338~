@@ -1,0 +1,21 @@
+<html>
+    <head>
+        <script>
+            window.onload = function(){
+                var canvas = document.getElementById("myCanvas");
+                var context = canvas.getContext("2d");
+                
+                context.rect(canvas.width / 2 - 100, canvas.height / 2 - 50, 200, 100);
+                context.fillStyle = "#8ED6FF";
+                context.fill();
+                context.lineWidth = 5;
+                context.strokeStyle = "black";
+                context.stroke();
+            };
+        </script>
+    </head>
+    <body>
+        <canvas id="myCanvas" width="600" height="250" style="border:1px solid black;">
+        </canvas>
+    </body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <style>
+            #myCanvas {
+                border: 1px solid #9C9898;
+				background-image: url("img/loadingScreen.png");
+            }
+        </style>
+        <script src="Animation.js">
+        </script>
+		<script src="Constants.js">
+        </script>
+        <script src="game.js">
+        </script>
+        <script src="Level.js">
+        </script>
+        <script src="Player.js">
+        </script>
+		<script src="HealthBar.js">
+        </script>
+    </head>
+    <body>
+        <canvas id="myCanvas" width="900" height="600">
+        </canvas>
+    </body>
+</html>

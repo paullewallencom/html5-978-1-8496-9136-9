@@ -1,0 +1,137 @@
+<html>
+<head>
+<script src="animation.js"></script>
+<script>
+
+function Gear(x,y,outerRadius,innerRadius,midRadius,
+		holeRadius,numTeeth,theta,thetaSpeedS,lightColor,
+		darkColor,clockwise) {
+	this.x=x;
+	this.y=y;
+	this.outerRadius=outerRadius;
+	this.innerRadius=innerRadius;
+	this.midRadius=midRadius;
+	this.holeRadius=holeRadius;
+	this.numTeeth=numTeeth;
+	this.theta=theta;
+	// thetaSpeedS is the angular speed of the gear
+	// in radians / second.  convert to theta, which is
+	// in radians / ms
+	this.thetaSpeed=thetaSpeedS/1000;
+	this.lightColor=lightColor;
+	this.darkColor=darkColor;
+	this.clockwise=clockwise;
+}
+
+function drawGears(context,gears) {
+	
+	for (var i=0; i<gears.length; i++) {
+	
+		var thisGear = gears[i];
+		
+		var numPoints = thisGear.numTeeth*2;
+		
+		// draw gear teeth
+		context.beginPath();
+		context.lineJoin="bevel";
+		for (var n=0; n<numPoints; n++) {
+		
+			var radius = null;
+			
+			if (n%2==0) {
+				radius=thisGear.outerRadius;
+			}
+			else {
+				radius=thisGear.innerRadius;
+			}
+			
+			var theta = thisGear.theta;
+			theta += ((Math.PI * 2) / numPoints) * (n+1);
+			
+			var x = (radius * Math.sin(theta)) + thisGear.x;
+			var y = (radius * Math.cos(theta)) + thisGear.y;
+			
+			if (n==0) {
+				context.moveTo(x,y);
+			}
+			else {
+				context.lineTo(x,y);
+			}
+		}
+		
+		context.closePath();
+		context.lineWidth=5;
+		context.strokeStyle=thisGear.darkColor;
+		context.stroke();	
+		
+		// draw gear body
+		context.beginPath();
+		context.arc(thisGear.x,thisGear.y,thisGear.midRadius,
+			0, 2*Math.PI,false);	
+		
+		var grd=context.createLinearGradient(thisGear.x-100,
+			thisGear.y-100,thisGear.x+100,thisGear.y+100);
+		grd.addColorStop(0,thisGear.lightColor); // light blue
+		grd.addColorStop(1,thisGear.darkColor); // dark blue
+		context.fillStyle=grd;
+		context.fill();	
+		context.lineWidth=5;
+		context.strokeStyle=thisGear.darkColor;
+		context.stroke();	
+
+		// draw gear hole
+		context.beginPath();
+		context.arc(thisGear.x,thisGear.y,thisGear.holeRadius,
+			0, 2*Math.PI,false);	
+		context.fillStyle="white";
+		context.fill();
+		context.strokeStyle=thisGear.darkColor;
+		context.stroke();	
+	}
+}
+
+
+window.onload = function() {
+	var canvas=document.getElementById("myCanvas");
+	
+	var gears = new Array();
+
+	gears.push(new Gear(270,105,90,50,80,
+		10,24,0,1,"#B1CCFF","#3959CC",false)); // blue
+	gears.push(new Gear(372,190,50,15,40,
+		10,12,0.14,2,"#FF9E9D","#AD0825",true)); // red
+	gears.push(new Gear(422,142,28,5,18,
+		7,6,0.14,4,"#FFDD87","#D25D00",false)); // orange
+		
+	// instantiate new animation object
+	var myAnimation = new Animation(canvas, 75);
+	
+	myAnimation.setUpdateStage(function() {
+		for (var i=0; i<gears.length; i++) {	
+			var thisGear = gears[i];
+			
+			if (gears[i].clockwise) {
+				gears[i].theta -= 
+					(thisGear.thetaSpeed*myAnimation.getTimeInterval());
+			}
+			else {
+				gears[i].theta +=
+					(thisGear.thetaSpeed*myAnimation.getTimeInterval());
+			}
+		}	
+	});
+	
+	myAnimation.setDrawStage(function() {
+		drawGears(myAnimation.getContext(),gears);
+	});
+	
+	myAnimation.start();
+}
+
+</script>
+</head>
+<body>
+	<canvas id="myCanvas" width="638" height="250" 
+		style="border:1px solid black;"></canvas>
+</body>
+</html>

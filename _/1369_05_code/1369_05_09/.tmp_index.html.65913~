@@ -1,0 +1,102 @@
+<!DOCTYPE HTML> 
+<html>
+    <head>
+        <script src="animation.js">
+        </script>
+        <script>
+            
+            function applyPhysics(anim, particle){
+                // physics globals
+                var gravity = 1500; // pixels / second^2
+                var collisionDamper = 0.8; // 80% velocity lost when collision occurs
+                var floorFriction = 100; // pixels / second^2
+            
+			    var timeInterval = anim.getTimeInterval();
+                var canvas = anim.getCanvas();
+                
+                // gravity
+                particle.vy += gravity * timeInterval / 1000;
+				
+				// position
+                particle.y += particle.vy * timeInterval / 1000;
+                particle.x += particle.vx * timeInterval / 1000;
+                
+                // floor condition
+                if (particle.y > (canvas.height - particle.radius)) {
+                    particle.y = canvas.height - particle.radius;
+                    particle.vy *= -1;
+                    particle.vy *= collisionDamper;
+                }
+                
+                // floor friction
+                if (particle.y == canvas.height - particle.radius) {
+                    if (particle.vx > 0.1) {
+                        particle.vx -= floorFriction * timeInterval / 1000;
+                    }
+                    else if (particle.vx < -0.1) {
+                        particle.vx += floorFriction * timeInterval / 1000;
+                    }
+                    else {
+                        particle.vx = 0;
+                    }
+                }
+                
+                // celing  condition
+                if (particle.y < (particle.radius)) {
+                    particle.y = particle.radius;
+                    particle.vy *= -1;
+                    particle.vy *= collisionDamper;
+                }
+                
+                // right wall condition
+                if (particle.x > (canvas.width - particle.radius)) {
+                    particle.x = canvas.width - particle.radius;
+                    particle.vx *= -1;
+                    particle.vx *= collisionDamper;
+                }
+                
+                // left wall condition
+                if (particle.x < (particle.radius)) {
+                    particle.x = particle.radius;
+                    particle.vx *= -1;
+                    particle.vx *= collisionDamper;
+                }
+            }
+            
+            window.onload = function(){
+                var anim = new Animation("myCanvas");
+                var canvas = anim.getCanvas();
+                var context = anim.getContext();
+                
+                var particle = {
+                    x: 10,
+                    y: canvas.height - 10,
+                    vx: 600, // px / second
+                    vy: -900, // px / second
+                    radius: 10
+                };
+                
+                anim.setDrawStage(function(){
+                    // update
+                    var timeInterval = this.getTimeInterval();
+                    applyPhysics(this, particle);
+                    
+                    // clear
+                    this.clear();
+                    
+                    // draw 
+                    context.beginPath();
+                    context.arc(particle.x, particle.y, particle.radius, 0, 2 * Math.PI, false);
+                    context.fillStyle = "blue";
+                    context.fill();
+                });
+                
+                anim.start();
+            };
+        </script>
+    </head>
+    <body>
+        <canvas id="myCanvas" width="600" height="250" style="border:1px solid black;">
+        </canvas>
+    </body>
+</html>

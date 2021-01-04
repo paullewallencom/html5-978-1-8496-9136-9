@@ -1,0 +1,33 @@
+<!DOCTYPE HTML> 
+<html>
+    <head>
+        <script>
+            window.onload = function(){
+                var canvas = document.getElementById("myCanvas");
+                var context = canvas.getContext("2d");
+                
+                var imageObj = new Image();
+                imageObj.onload = function(){
+					// source rectangular area
+                    var sourceX = 550;
+                    var sourceY = 300;
+                    var sourceWidth = 300;
+                    var sourceHeight = 214;
+                    
+					// destination image size and position
+                    var destWidth = sourceWidth;
+                    var destHeight = sourceHeight;
+                    var destX = canvas.width / 2 - destWidth / 2;
+                    var destY = canvas.height / 2 - destHeight / 2;
+                    
+                    context.drawImage(this, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight);
+                };
+                imageObj.src = "jet_1000x714.jpg";
+            };
+        </script>
+    </head>
+    <body>
+        <canvas id="myCanvas" width="600" height="250" style="border:1px solid black;">
+        </canvas>
+    </body>
+</html>

@@ -1,0 +1,35 @@
+<html>
+<head>
+<script>
+
+window.onload = function() {
+	var canvas=document.getElementById("myCanvas");
+	var context=canvas.getContext("2d");
+
+	var imageObj = new Image();
+	imageObj.onload = function() {
+		var sourceWidth = this.width;
+		var sourceHeight = this.height;	
+		var destX = canvas.width/2 - sourceWidth/2;
+		var destY = canvas.height/2 - sourceHeight/2; 
+		var sourceX=destX;
+		var sourceY=destY;
+	
+		context.drawImage(this,destX,destY);
+		
+		var imageData = context.getImageData(sourceX,sourceY,sourceWidth, sourceHeight);		
+		var data = imageData.data;
+		
+		alert("width=" + imageData.width + ", height=" + imageData.height + ", data length=" + data.length);
+	}
+
+	imageObj.src = "jet_300x214.jpg";	
+}
+
+</script>
+</head>
+<body>
+	<canvas id="myCanvas" width="638" height="250" 
+		style="border:1px solid black;"></canvas>
+</body>
+</html>

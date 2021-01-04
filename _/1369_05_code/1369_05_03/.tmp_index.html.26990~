@@ -1,0 +1,67 @@
+<html>
+<head>
+<script src="animation.js"></script>
+<script>
+
+function Rectangle(x, y, vx, vy, width, height, borderWidth) {
+	this.x=x;
+	this.y=y;
+	this.vx=vx;
+	this.vy=vy;
+	this.width = width;
+	this.height = height;
+	this.borderWidth = borderWidth;
+}
+
+window.onload = function() {
+	var canvas=document.getElementById("myCanvas");
+	// instantiate new animation object
+	var myAnimation = new Animation(canvas, 75);
+	
+	var gravity = 2; // pixels / second^2
+	var speedIncrementEachFrame = gravity * 
+		myAnimation.getTimeInterval() / 1000; // pixels / second
+		
+	var myRectangle = new Rectangle (canvas.width/2-50,2,0,0,100,50,5);
+		
+	myAnimation.setUpdateStage(function() {
+		if (myAnimation.getTime()>1000) {
+			myRectangle.vy += speedIncrementEachFrame;
+			myRectangle.y += (myRectangle.vy * 
+				myAnimation.getTimeInterval());
+			
+			if (myRectangle.y > canvas.height - 
+				myRectangle.height - 
+				myRectangle.borderWidth/2) {
+				myRectangle.y = canvas.height - 
+					myRectangle.height - 
+					myRectangle.borderWidth/2;
+					
+				myAnimation.stop();
+			}	
+		}
+	});
+	
+	myAnimation.setDrawStage(function() {
+		var context = myAnimation.getContext();
+		context.beginPath();
+		context.rect(myRectangle.x,myRectangle.y,
+			myRectangle.width,myRectangle.height);
+	 
+		context.fillStyle="#8ED6FF";
+		context.fill();
+		context.lineWidth=myRectangle.borderWidth;
+		context.strokeStyle="black"; 
+		context.stroke();		
+	});
+	
+	myAnimation.start();
+}
+
+</script>
+</head>
+<body>
+	<canvas id="myCanvas" width="638" height="250" 
+		style="border:1px solid black;"></canvas>
+</body>
+</html>

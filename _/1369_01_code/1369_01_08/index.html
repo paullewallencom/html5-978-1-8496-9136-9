@@ -1,0 +1,22 @@
+<html>
+    <head>
+        <script>
+            window.onload = function(){
+                var canvas = document.getElementById("myCanvas");
+                var context = canvas.getContext("2d");
+                
+                context.font = "40pt Calibri";
+                context.fillStyle = "black";
+                // align text horizontally center
+                context.textAlign = "center";
+                // align text vertically center
+                context.textBaseline = "middle";
+                context.fillText("Hello World!", canvas.width / 2, 120);
+            };
+        </script>
+    </head>
+    <body>
+        <canvas id="myCanvas" width="600" height="250" style="border:1px solid black;">
+        </canvas>
+    </body>
+</html>

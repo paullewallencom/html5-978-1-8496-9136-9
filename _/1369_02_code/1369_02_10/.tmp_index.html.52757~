@@ -1,0 +1,75 @@
+<html>
+<head>
+<script>
+
+function drawTriangle(context,x,y,triangleWidth,
+	triangleHeight,fillStyle) {
+	var triangleWidth = 150;
+	var triangleHeight = 150;
+	
+	context.beginPath();
+	context.moveTo(x,y);
+	context.lineTo(x+triangleWidth/2,y+triangleHeight);
+	context.lineTo(x-triangleWidth/2,y+triangleHeight);
+	context.closePath();
+	context.fillStyle=fillStyle;
+	context.fill();
+}
+
+window.onload = function() {
+	var canvas=document.getElementById("myCanvas");
+	var context=canvas.getContext("2d");
+	
+	var triangleWidth = 150;
+	var triangleHeight = 150;
+	var triangleY = canvas.height/2 - triangleWidth/2;
+	
+	// color fill (left)
+	drawTriangle(context,canvas.width*1/5,triangleY,
+		triangleWidth,triangleHeight,"blue");
+	
+	// linear gradient fill (second from left)
+	var grd=context.createLinearGradient(canvas.width*2/5,triangleY,
+		canvas.width*2/5,triangleY+triangleHeight);
+	grd.addColorStop(0,"#8ED6FF"); // light blue
+	grd.addColorStop(1,"#004CB3"); // dark blue
+	drawTriangle(context,canvas.width*2/5,triangleY,
+		triangleWidth,triangleHeight,grd);
+	
+	// radial gradient fill (second from right)
+	var centerX = (canvas.width*3/5
+					+ (canvas.width*3/5-triangleWidth/2)
+					+ (canvas.width*3/5+triangleWidth/2))/3;
+					
+	var centerY = (triangleY
+					+ (triangleY + triangleHeight)
+					+ (triangleY + triangleHeight))/3;
+					
+	var grd=context.createRadialGradient(centerX,
+		centerY,10,centerX,centerY,100);
+	grd.addColorStop(0,"red");
+	grd.addColorStop(0.17,"orange"); 
+	grd.addColorStop(0.33,"yellow");
+	grd.addColorStop(0.5,"green");
+	grd.addColorStop(0.666,"blue"); 
+	grd.addColorStop(1,"violet"); 
+	drawTriangle(context,canvas.width*3/5,triangleY,
+		triangleWidth,triangleHeight,grd);
+		
+	// pattern fill (right)
+	var imageObj = new Image();
+	imageObj.onload = function() {
+		var pattern = context.createPattern(imageObj, "repeat");
+		drawTriangle(context,canvas.width*4/5,triangleY,
+			triangleWidth,triangleHeight,pattern);
+	}
+	imageObj.src = "wood-pattern.png";		
+}
+
+</script>
+</head>
+<body>
+	<canvas id="myCanvas" width="638" height="250" 
+		style="border:1px solid black;"></canvas>
+</body>
+</html>

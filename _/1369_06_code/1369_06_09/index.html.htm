@@ -1,0 +1,196 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <style>
+            canvas {
+                border: 1px solid black;
+                font-family: "Helvetica Neue", "Arial", "Lucida Grande", "Lucida Sans Unicode", "Microsoft YaHei", sans-serif;
+                font-size: 13px;
+                line-height: 1.5;
+                color: #474747;
+            }
+            
+            #toolbar {
+                width: 590px;
+                border: 1px solid black;
+                border-bottom: 0px;
+                padding: 5px;
+                background-color: #f8f8f8;
+            }
+            
+            input[type = 'text'] {
+                width: 30px;
+				margin: 0px 5px 0px 5px;
+            }
+            
+            label {
+                margin-left: 40px;
+            }
+            
+            label:first-of-type {
+                margin-left: 0px;
+            }
+            
+            input[type = 'button'] {
+                float: right;
+            }
+            
+            #colorSquare {
+                position: relative;
+                display: inline-block;
+                width: 20px;
+                height: 20px;
+                background-color: blue;
+                top: 4px;
+            }
+        </style>
+        <script src="events.js">
+        </script>
+        <script>
+            function addPoint(events, points){
+                var context = events.getContext();
+                var drawingPos = events.getMousePos();
+                
+                if (drawingPos !== null) {
+                    points.push(drawingPos);
+                }
+            }
+            
+            function drawPath(canvas, points, canvasImg){
+                var context = canvas.getContext("2d");
+                
+                // clear canvas
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // redraw canvas before path
+                context.drawImage(canvasImg, 0, 0, canvas.width, canvas.height);
+                
+                // draw patch
+                context.beginPath();
+                context.lineTo(points[0].x, points[0].y);
+                for (var n = 1; n < points.length; n++) {
+                    var point = points[n];
+                    context.lineTo(point.x, point.y);
+                }
+                context.stroke();
+            }
+            
+            function updateColorSquare(){
+                var red = document.getElementById("red").value;
+                var green = document.getElementById("green").value;
+                var blue = document.getElementById("blue").value;
+                
+                var colorSquare = document.getElementById("colorSquare");
+                colorSquare.style.backgroundColor = "rgb(" + red + "," + green + "," + blue + ")";
+            }
+            
+            function getCanvasImg(canvas){
+                var img = new Image();
+                img.src = canvas.toDataURL();
+                return img;
+            }
+            
+            window.onload = function(){
+                var events = new Events("myCanvas");
+                var canvas = events.getCanvas();
+                var context = events.getContext();
+                var isMouseDown = false;
+                var canvasImg = getCanvasImg(canvas);
+                var points = [];
+                
+                // initialize drawing params
+                var red = document.getElementById("red").value;
+                var green = document.getElementById("green").value;
+                var blue = document.getElementById("blue").value;
+                var size = document.getElementById("size").value;
+                
+                // attach listeners
+                document.getElementById("red").addEventListener("keyup", function(evt){
+                    updateColorSquare();
+                }, false);
+                
+                document.getElementById("green").addEventListener("keyup", function(evt){
+                    updateColorSquare();
+                }, false);
+                
+                document.getElementById("blue").addEventListener("keyup", function(evt){
+                    updateColorSquare();
+                }, false);
+                
+                document.getElementById("clearButton").addEventListener("click", function(evt){
+                    events.clear();
+                    points = [];
+                    canvasImg = getCanvasImg(canvas);
+                }, false);
+                
+                document.getElementById("saveButton").addEventListener("click", function(evt){
+                    // open new window with saved image so user
+                    // can right click and save to their computer
+                    window.open(canvas.toDataURL());
+                }, false);
+                
+                canvas.addEventListener("mousedown", function(){
+                    var drawingPos = events.getMousePos();
+                    
+                    // update drawing params
+                    red = document.getElementById("red").value;
+                    green = document.getElementById("green").value;
+                    blue = document.getElementById("blue").value;
+                    size = document.getElementById("size").value;
+                    
+                    // start drawing path
+                    context.strokeStyle = "rgb(" + red + "," + green + "," + blue + ")";
+                    context.lineWidth = size;
+                    context.lineJoin = "round";
+                    context.lineCap = "round";
+                    addPoint(events, points);
+                    isMouseDown = true;
+                }, false);
+                
+                canvas.addEventListener("mouseup", function(){
+                    isMouseDown = false;
+                    if (points.length > 0) {
+                        drawPath(this, points, canvasImg);
+                        // reset points
+                        points = [];
+                    }
+                    canvasImg = getCanvasImg(this);
+                }, false);
+                
+                canvas.addEventListener("mouseout", function(){
+                    if (document.createEvent) {
+                        var evt = document.createEvent('MouseEvents');
+                        evt.initEvent("mouseup", true, false);
+                        this.dispatchEvent(evt);
+                    }
+                    else {
+                        this.fireEvent("onmouseup");
+                    }
+                }, false);
+                
+                events.setStage(function(){
+                    if (isMouseDown) {
+                        addPoint(this, points);
+                        drawPath(canvas, points, canvasImg);
+                    }
+                });
+            };
+        </script>
+    </head>
+    <body>
+        <div id="toolbar">
+            <label>
+                Color
+            </label>
+            R: <input type="text" id="red" maxlength="3" class="short" value="0">G: <input type="text" id="green" maxlength="3" class="short" value="0">B: <input type="text" id="blue" maxlength="3" class="short" value="255">
+            <div id="colorSquare">
+            </div>
+            <label>
+                Size:
+            </label>
+            <input type="text" id="size" maxlength="3" class="short" value="20">px<input type="button" id="clearButton" value="Clear"><input type="button" id="saveButton" value="Save">
+        </div>
+        <canvas id="myCanvas" width="600" height="250">
+        </canvas>
+    </body>
+</html>

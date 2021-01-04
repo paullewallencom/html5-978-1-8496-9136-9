@@ -1,0 +1,79 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <script src="events.js">
+        </script>
+        <script>
+            function writeMessage(context, message){
+                context.font = "18pt Calibri";
+                context.fillStyle = "black";
+                context.fillText(message, 10, 25);
+            }
+            
+            function drawImage(challengerImg){
+				var events = new Events("myCanvas");
+				var canvas = events.getCanvas();
+				var context = events.getContext();
+				
+                var rectX = canvas.width / 2 - 240 / 2;
+                var rectY = canvas.height / 2 - 143 / 2;
+                var draggingRect = false;
+                var draggingRectOffsetX = 0;
+                var draggingRectOffsetY = 0;
+
+                events.setDrawStage(function(){
+                    var mousePos = this.getMousePos();
+                    
+                    if (draggingRect) {
+                        rectX = mousePos.x - draggingRectOffsetX;
+                        rectY = mousePos.y - draggingRectOffsetY;
+                    }
+
+                    // clear the canvas
+                    this.clear();
+					
+                    writeMessage(context, "Drag and drop the car...");
+                    
+                    this.beginRegion();
+                    context.drawImage(challengerImg, rectX, rectY, 240, 143);
+                    // draw rectangular region for image
+                    context.beginPath();
+                    context.rect(rectX, rectY, 240, 143);
+                    context.closePath();
+                    
+                    this.addRegionEventListener("mousedown", function(){
+                        draggingRect = true;
+                        var mousePos = events.getMousePos();
+                        
+                        draggingRectOffsetX = mousePos.x - rectX;
+                        draggingRectOffsetY = mousePos.y - rectY;
+                    });
+                    this.addRegionEventListener("mouseup", function(){
+                        draggingRect = false;
+                    });
+                    this.addRegionEventListener("mouseover", function(){
+                        document.body.style.cursor = "pointer";
+                    });
+                    this.addRegionEventListener("mouseout", function(){
+                        document.body.style.cursor = "default";
+                    });
+                    
+                    this.closeRegion();
+                });
+            }
+            
+            window.onload = function(){
+                // load images
+                challengerImg = new Image();
+                challengerImg.onload = function(){
+                    drawImage(this);
+                };
+                challengerImg.src = "challenger.jpg";
+            };
+        </script>
+    </head>
+    <body>
+        <canvas id="myCanvas" width="600" height="250" style="border:1px solid black;">
+        </canvas>
+    </body>
+</html>

@@ -1,0 +1,26 @@
+<html>
+    <head>
+        <script>
+            window.onload = function(){
+                var canvas = document.getElementById("myCanvas");
+                var context = canvas.getContext("2d");
+                
+                var imageObj = new Image();
+                imageObj.onload = function(){
+                    // translate context to center of canvas
+                    context.translate(canvas.width / 2, canvas.height / 2);
+                    
+                    // rotate context by 45 degrees counter clockwise
+                    context.rotate(-1 * Math.PI / 4);
+                    context.drawImage(this, -1 * imageObj.width / 2, -1 * imageObj.height / 2);
+                };
+                
+                imageObj.src = "jet_300x214.jpg";
+            };
+        </script>
+    </head>
+    <body>
+        <canvas id="myCanvas" width="600" height="250" style="border:1px solid black;">
+        </canvas>
+    </body>
+</html>

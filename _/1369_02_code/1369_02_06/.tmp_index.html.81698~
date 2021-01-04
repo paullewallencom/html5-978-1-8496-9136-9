@@ -1,0 +1,77 @@
+<html>
+<head>
+<script>
+
+window.onload = function() {
+	var canvas=document.getElementById("myCanvas");
+	var context=canvas.getContext("2d");
+
+	// define gear properties
+	var centerX = canvas.width/2;
+	var centerY = canvas.height/2;
+	var outerRadius = 95;
+	var innerRadius = 50;
+	var midRadius = innerRadius * 1.6;
+	var holeRadius = 10;	
+	var numPoints = 50;
+	
+	// draw gear teeth
+	context.beginPath();
+	context.lineJoin="bevel";
+	for (var n=0; n<numPoints; n++) {
+	
+		var radius = null;
+		
+		if (n%2==0) {
+			radius=outerRadius;
+		}
+		else {
+			radius=innerRadius;
+		}
+		
+		var theta = ((Math.PI * 2) / numPoints) * (n+1);
+		var x = (radius * Math.sin(theta)) + centerX;
+		var y = (radius * Math.cos(theta)) + centerY;
+		
+		if (n==0) {
+			context.moveTo(x,y);
+		}
+		else {
+			context.lineTo(x,y);
+		}
+	}
+	
+	context.closePath();
+	context.lineWidth=5;
+	context.strokeStyle="#004CB3";
+	context.stroke();	
+	
+	// draw gear body
+	context.beginPath();
+	context.arc(centerX,centerY,midRadius,0, 2*Math.PI,false);	
+	
+	var grd=context.createLinearGradient(230,0,370,200);
+	grd.addColorStop(0,"#8ED6FF"); // light blue
+	grd.addColorStop(1,"#004CB3"); // dark blue
+	context.fillStyle=grd;
+	context.fill();	
+	context.lineWidth=5;
+	context.strokeStyle="#004CB3";
+	context.stroke();	
+
+	// draw gear hole
+	context.beginPath();
+	context.arc(centerX,centerY,holeRadius,0, 2*Math.PI,false);	
+	context.fillStyle="white";
+	context.fill();
+	context.strokeStyle="#004CB3";
+	context.stroke();	
+}
+
+</script>
+</head>
+<body>
+	<canvas id="myCanvas" width="638" height="250" 
+		style="border:1px solid black;"></canvas>
+</body>
+</html>

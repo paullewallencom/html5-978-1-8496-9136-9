@@ -1,0 +1,76 @@
+<html>
+    <head>
+        <script>
+            function drawLogo(context){
+                // draw Hello Logo! text
+                context.beginPath();
+                context.font = "10pt Calibri";
+                context.textAlign = "center";
+                context.textBaseline = "middle";
+                context.fillStyle = "blue";
+                context.fillText("Hello Logo!", 0, 0);
+                context.closePath();
+                
+				// define style for both waves
+                context.lineWidth = 2;
+                context.strokeStyle = "blue";
+                
+                // draw top wave
+                context.beginPath();
+                context.moveTo(-30, 10);
+                context.bezierCurveTo(-5, 5, 5, 15, 30, 10);
+                context.stroke();
+                
+                // draw bottom wave
+                context.beginPath();
+                context.moveTo(-30, 15);
+                context.bezierCurveTo(-5, 10, 5, 20, 30, 15);
+                context.stroke();
+            }
+            
+            function getRandomX(canvas){
+                return Math.round(Math.random() * canvas.width);
+            }
+            
+            function getRandomY(canvas){
+                return Math.round(Math.random() * canvas.height);
+            }
+            
+            function getRandomSize(){
+                return Math.round(Math.random() * 5);
+            };
+            
+            function getRandomAngle(){
+                return Math.random() * Math.PI * 2;
+            }
+            
+            window.onload = function(){
+                var canvas = document.getElementById("myCanvas");
+                var context = canvas.getContext("2d");
+                
+                // draw 5 randomly transformed logos
+                for (var n = 0; n < 5; n++) {
+                    context.save();
+                    
+                    // translate to random position
+                    context.translate(getRandomX(canvas), getRandomY(canvas));
+                    
+                    // rotate by random angle
+                    context.rotate(getRandomAngle());
+                    
+                    // scale by random size
+                    var randSize = getRandomSize();
+                    context.scale(randSize, randSize);
+                    
+                    // draw logo
+                    drawLogo(context);
+                    context.restore();
+                }
+            };
+        </script>
+    </head>
+    <body>
+        <canvas id="myCanvas" width="600" height="250" style="border:1px solid black;">
+        </canvas>
+    </body>
+</html>

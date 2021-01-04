@@ -1,0 +1,24 @@
+<!DOCTYPE HTML> 
+<html>
+    <head>
+        <script>
+            window.onload = function(){
+                var canvas = document.getElementById("myCanvas");
+                var context = canvas.getContext("2d");
+                
+                var imageObj = new Image();
+                imageObj.onload = function(){
+                    var destX = canvas.width / 2 - this.width / 2;
+                    var destY = canvas.height / 2 - this.height / 2;
+                    
+                    context.drawImage(this, destX, destY);
+                };
+                imageObj.src = "jet_300x214.jpg";
+            };
+        </script>
+    </head>
+    <body>
+        <canvas id="myCanvas" width="600" height="250" style="border:1px solid black;">
+        </canvas>
+    </body>
+</html>

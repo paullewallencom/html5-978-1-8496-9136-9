@@ -1,0 +1,42 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <script>
+            window.onload = function(){
+                var canvas = document.getElementById("myCanvas");
+                var context = canvas.getContext("2d");
+                
+                var imageObj = new Image();
+                imageObj.onload = function(){
+                    var sourceWidth = this.width;
+                    var sourceHeight = this.height;
+                    var sourceX = canvas.width / 2 - sourceWidth / 2;
+                    var sourceY = canvas.height / 2 - sourceHeight / 2;
+                    var destX = sourceX;
+                    var destY = sourceY;
+                    
+                    context.drawImage(this, destX, destY);
+                    
+                    var imageData = context.getImageData(sourceX, sourceY, sourceWidth, sourceHeight);
+                    var data = imageData.data;
+                    
+                    for (var i = 0; i < data.length; i += 4) {
+                        data[i] = 255 - data[i]; // red
+                        data[i + 1] = 255 - data[i + 1]; // green
+                        data[i + 2] = 255 - data[i + 2]; // blue
+                        // i+3 is alpha (the fourth element)
+                    }
+                    
+                    // overwrite original image with
+                    // new image data
+                    context.putImageData(imageData, destX, destY);
+                };
+                imageObj.src = "jet_300x214.jpg";
+            };
+        </script>
+    </head>
+    <body>
+        <canvas id="myCanvas" width="600" height="250" style="border:1px solid black;">
+        </canvas>
+    </body>
+</html>

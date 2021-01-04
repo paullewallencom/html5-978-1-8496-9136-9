@@ -1,0 +1,45 @@
+<!DOCTYPE HTML> 
+<html>
+    <head>
+        <script src="animation.js">
+        </script>
+        <script>
+            window.onload = function(){
+                var anim = new Animation("myCanvas");
+                var canvas = anim.getCanvas();
+                var context = anim.getContext();
+                
+                var box = {
+                    x: 250,
+                    y: canvas.height / 2 - 25,
+                    width: 100,
+                    height: 50
+                };
+				
+                var centerX = canvas.width / 2 - box.width / 2;
+                var amplitude = 150; // pixels
+                var period = 2000; // ms
+                                   
+                anim.setDrawStage(function(){
+					// update
+					box.x = amplitude * Math.sin(anim.getTime() * 2 * Math.PI / period) + centerX;
+					
+					// clear
+					this.clear();
+					
+					// draw
+                    context.beginPath();
+                    context.rect(box.x, box.y, box.width, box.height);
+                    context.fillStyle = "blue";
+                    context.fill();
+                });
+                
+                anim.start();
+            };
+        </script>
+    </head>
+    <body>
+        <canvas id="myCanvas" width="600" height="250" style="border:1px solid black;">
+        </canvas>
+    </body>
+</html>

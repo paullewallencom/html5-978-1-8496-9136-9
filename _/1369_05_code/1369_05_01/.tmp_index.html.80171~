@@ -1,0 +1,23 @@
+<html>
+    <head>
+        <script src="animation.js">
+        </script>
+        <script>
+            window.onload = function(){
+                var myAnimation = new Animation("myCanvas");
+                 
+                // set the drawStage function
+                myAnimation.setDrawStage(function(){
+                    // do stuff here	
+                });
+                
+                // start animation
+                myAnimation.start();
+            };
+        </script>
+    </head>
+    <body>
+        <canvas id="myCanvas" width="600" height="250" style="border:1px solid black;">
+        </canvas>
+    </body>
+</html>

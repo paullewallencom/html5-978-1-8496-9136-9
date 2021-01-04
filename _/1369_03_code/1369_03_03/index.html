@@ -1,0 +1,38 @@
+<!DOCTYPE HTML> 
+<html>
+    <head>
+        <script>
+            window.requestAnimFrame = (function(callback){
+                return window.requestAnimationFrame ||
+                window.webkitRequestAnimationFrame ||
+                window.mozRequestAnimationFrame ||
+                window.oRequestAnimationFrame ||
+                window.msRequestAnimationFrame ||
+                function(callback){
+                    window.setTimeout(callback, 1000 / 60);
+                };
+            })();
+            
+            function drawFrame(context, video){
+                context.drawImage(video, 0, 0);
+                requestAnimFrame(function(){
+                    drawFrame(context, video);
+                });
+            }
+            
+            window.onload = function(){
+                var canvas = document.getElementById("myCanvas");
+                var context = canvas.getContext("2d");
+                var video = document.getElementById("myVideo");
+                drawFrame(context, video);
+            };
+        </script>
+    </head>
+    <body>
+        <video id="myVideo" autoplay="true" loop="true" style="display:none;">
+            <source src="BigBuckBunny_640x360.ogv" type="video/ogg"/><source src="BigBuckBunny_640x360.mp4" type="video/mp4"/>
+        </video>
+        <canvas id="myCanvas" width="600" height="360" style="border:1px solid black;">
+        </canvas>
+    </body>
+</html>

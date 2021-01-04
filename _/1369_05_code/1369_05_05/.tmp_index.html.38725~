@@ -1,0 +1,76 @@
+<html>
+<head>
+<script src="animation.js"></script>
+<script>
+
+function Bubble(x,y,volume,width) {
+	this.x=x;
+	this.y=y;
+	this.volume=volume;
+	this.width=width;
+}
+
+window.onload = function() {
+	var canvas=document.getElementById("myCanvas");
+	// instantiate new animation object
+	
+	var x = canvas.width/2;
+	var y = canvas.height/2;	
+	var volume=10000;
+	var width=100;
+	var amplitude = 5;
+	var centerX = 0;
+	var period = 1000; // in ms
+	var bubble = new Bubble(x,y,volume,width);
+	
+	var myAnimation = new Animation(canvas, 75);
+	
+	myAnimation.setUpdateStage(function() {
+		var nextWidth = amplitude * Math.sin(myAnimation.getTime()*2*Math.PI/period) + 100;
+		bubble.width = nextWidth;		
+	});
+	
+	myAnimation.setDrawStage(function() {
+		var context = myAnimation.getContext();
+		var width = bubble.width;
+		var volume = bubble.volume;
+
+		var height = volume / width;
+		
+		var halfWidth = width/2;
+		var halfHeight = height/2;
+		
+		context.strokeStyle="#002DAF"; //  line color
+		context.fillStyle="#D7FBFF"; 
+		
+		context.lineWidth=5; // line width
+		context.beginPath();
+		context.moveTo(bubble.x,bubble.y - halfHeight); 
+		context.quadraticCurveTo(bubble.x-halfWidth,
+			bubble.y-halfHeight,bubble.x-halfWidth,
+			bubble.y); // top left curve	 
+		context.quadraticCurveTo(bubble.x-halfWidth,
+			bubble.y+halfHeight,bubble.x,
+			bubble.y+halfHeight); // bottom left curve 	   
+		context.quadraticCurveTo(bubble.x+halfWidth,
+			bubble.y+halfHeight,bubble.x+halfWidth,
+			bubble.y); // bottom right curve 
+		context.quadraticCurveTo(bubble.x+halfWidth,
+			bubble.y-halfHeight,bubble.x,
+			bubble.y-halfHeight); // bottom right curve 	   
+		
+		context.closePath();
+		context.stroke();
+		context.fill();
+	});
+	
+	myAnimation.start();
+}
+
+</script>
+</head>
+<body>
+	<canvas id="myCanvas" width="638" height="250" 
+		style="border:1px solid black;"></canvas>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <script src="animation.js">
+        </script>
+        <script>
+            window.onload = function(){
+                var myAnimation = new Animation("myCanvas");
+                var canvas = myAnimation.getCanvas();
+                var context = myAnimation.getContext();
+                
+                var linearSpeed = 100; // pixels / second
+                var box = {
+                    x: 0,
+                    y: canvas.height / 2 - 25,
+                    width: 100,
+                    height: 50
+                };
+                
+                myAnimation.setDrawStage(function(){
+                    // update
+                    var linearDistEachFrame = linearSpeed * this.getTimeInterval() / 1000;
+                    
+                    if (box.x < canvas.width - box.width) {
+                        box.x += linearDistEachFrame;
+                    }
+                    else {
+                        myAnimation.stop();
+                    }
+                    
+                    // clear
+                    this.clear();
+                    
+                    // draw
+                    context.beginPath();
+                    context.fillStyle = "blue";
+                    context.fillRect(box.x, box.y, box.width, box.height);
+                });
+                
+                myAnimation.start();
+            };
+        </script>
+    </head>
+    <body>
+        <canvas id="myCanvas" width="600" height="250" style="border:1px solid black;">
+        </canvas>
+    </body>
+</html>

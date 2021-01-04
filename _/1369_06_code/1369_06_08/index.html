@@ -1,0 +1,187 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+<script src="events.js">
+</script>
+<script>
+    /*
+     * loads the images and then calls the callback function
+     * with a hash of image objects  when the images have loaded
+     */
+    function loadImages(sources, callback){
+        var loadedImages = 0;
+        var numImages = 0;
+        var images = {};
+        // get num of sources
+        for (var src in sources) {
+            numImages++;
+        }
+        // load images
+        for (var src in sources) {
+            images[src] = new Image();
+            images[src].onload = function(){
+                // call callback function when images
+                // have loaded
+                if (++loadedImages >= numImages) {
+                    callback(images);
+                }
+            };
+            images[src].src = sources[src];
+        }
+    }
+    
+    function drawMagnifier(config){
+        var context = config.context;
+		var images = config.images;
+        var mousePos = config.mousePos;
+        var imageX = config.imageX;
+        var imageY = config.imageY;
+        var magWidth = config.magWidth;
+        var magHeight = config.magHeight;
+        var smallWidth = config.smallWidth;
+        var smallHeight = config.smallHeight;
+        var largeWidth = config.largeWidth;
+        var largeHeight = config.largeHeight;
+        
+        /*
+         * sourceX and sourceY assume that the rectangle we are cropping out
+         * of the large image exists within the large image.  We'll have to make
+         * some adjustments for the cases where the magnifier goes past the edges
+         * of the large image
+         */
+        var sourceX = ((mousePos.x - imageX) * largeWidth / smallWidth) - magWidth / 2;
+        var sourceY = ((mousePos.y - imageY) * largeHeight / smallHeight) - magHeight / 2;
+        var destX = mousePos.x - magWidth / 2;
+        var destY = mousePos.y - magHeight / 2;
+        var viewWidth = magWidth;
+        var viewHeight = magHeight;
+        var viewX = destX;
+        var viewY = destY;
+        var drawMagImage = true;
+        
+        // boundary checks and adjustments for cases
+        // where the magnifyer goes past the edges of the large image
+        if (sourceX < 0) {
+            if (sourceX > -1 * magWidth) {
+                var diffX = -1 * sourceX;
+                viewX += diffX;
+                viewWidth -= diffX;
+                sourceX = 0;
+            }
+            else {
+                drawMagImage = false;
+            }
+        }
+        
+        if (sourceX > largeWidth - magWidth) {
+            if (sourceX < largeWidth) {
+                viewWidth = largeWidth - sourceX;
+            }
+            else {
+                drawMagImage = false;
+            }
+        }
+        
+        if (sourceY < 0) {
+            if (sourceY > -1 * magHeight) {
+                var diffY = -1 * sourceY;
+                viewY += diffY;
+                viewHeight -= diffY;
+                sourceY = 0;
+            }
+            else {
+                drawMagImage = false;
+            }
+        }
+        
+        if (sourceY > largeHeight - magHeight) {
+            if (sourceY < largeHeight) {
+                viewHeight = largeHeight - sourceY;
+            }
+            else {
+                drawMagImage = false;
+            }
+        }
+        
+        // draw white magnifier background
+        context.beginPath();
+        context.fillStyle = "white";
+        context.fillRect(destX, destY, magWidth, magHeight);
+        
+        // draw image
+        if (drawMagImage) {
+            context.beginPath();
+            context.drawImage(images.cobraLargeImg, sourceX, sourceY, viewWidth, viewHeight, viewX, viewY, viewWidth, viewHeight);
+        }
+        
+        // draw magnifier border
+        context.beginPath();
+        context.lineWidth = 2;
+        context.strokeStyle = "black";
+        context.strokeRect(destX, destY, magWidth, magHeight);
+    }
+    
+    function drawImages(images){
+        var events = new Events("myCanvas");
+        var canvas = events.getCanvas();
+        var context = events.getContext();
+        
+        // define magnifier dependencies
+        var imageX = canvas.width / 2 - images.cobraSmallImg.width / 2;
+        var imageY = canvas.height / 2 - images.cobraSmallImg.height / 2;
+        var magWidth = 200;
+        var magHeight = 150;
+        var smallWidth = images.cobraSmallImg.width;
+        var smallHeight = images.cobraSmallImg.height;
+        var largeWidth = images.cobraLargeImg.width;
+        var largeHeight = images.cobraLargeImg.height;
+        
+        events.setDrawStage(function(){
+            var mousePos = events.getMousePos();
+            this.clear();
+            
+            context.drawImage(images.cobraSmallImg, imageX, imageY, smallWidth, smallHeight);
+            // draw rectangular region for image
+            context.beginPath();
+            context.lineWidth = 2;
+            context.strokeStyle = "black";
+            context.strokeRect(imageX, imageY, smallWidth, smallHeight);
+            context.closePath();
+            
+            if (mousePos !== null) {
+                drawMagnifier({
+                    context: context,
+					images: images,
+                    mousePos: mousePos,
+                    imageX: imageX,
+                    imageY: imageY,
+                    magWidth: magWidth,
+                    magHeight: magHeight,
+                    smallWidth: smallWidth,
+                    smallHeight: smallHeight,
+                    largeWidth: largeWidth,
+                    largeHeight: largeHeight
+                });
+            }
+        });
+        
+        canvas.addEventListener("mouseout", function(){
+            events.drawStage();
+        }, false);
+    }
+    
+    window.onload = function(){
+        var sources = {
+            cobraSmallImg: "cobra_280x210.jpg",
+            cobraLargeImg: "cobra_800x600.jpg"
+        };
+        
+        loadImages(sources, drawImages);
+    };
+</script>
+    </head>
+    <body>
+        <canvas id="myCanvas" width="600" height="250" style="border:1px solid black;">
+        </canvas>
+    </body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <script src="events.js">
+        </script>
+        <script>
+            function writeMessage(context, message){
+                context.font = "18pt Calibri";
+                context.fillStyle = "black";
+                context.fillText(message, 10, 25);
+            }
+            
+            window.onload = function(){
+                var events = new Events("myCanvas");
+                var canvas = events.getCanvas();
+                var context = events.getContext();
+                var message = "";
+				
+                events.setDrawStage(function(){
+					this.clear();
+					
+                    // draw blue triangle
+                    this.beginRegion();
+                    context.beginPath();
+                    context.lineWidth = 4;
+                    context.strokeStyle = "black";
+                    context.fillStyle = "#00D2FF";
+                    context.moveTo(50, 50);
+                    context.lineTo(180, 80);
+                    context.lineTo(80, 170);
+                    context.closePath();
+                    context.fill();
+                    context.stroke();
+                    
+                    this.addRegionEventListener("mousemove", function(){
+                        var mousePos = events.getMousePos();
+                        var mouseX = mousePos.x - 50;
+                        var mouseY = mousePos.y - 50;
+                        message = "Triangle mouse Position: " + mouseX + "," + mouseY;
+                    });
+					
+                    this.addRegionEventListener("onmouseout", function(){
+                        message = "Mouseout blue triangle!";
+                    });
+                    
+                    this.closeRegion();
+                    
+                    // draw yellow rectangle
+                    // this is an example of a shape
+                    // with no event listeners
+                    context.beginPath();
+                    context.lineWidth = 4;
+                    context.strokeStyle = "black";
+                    context.fillStyle = "yellow";
+                    context.rect(200, 65, 150, 75);
+                    context.fill();
+                    context.stroke();
+                    
+                    // draw red circle
+                    this.beginRegion();
+                    context.beginPath();
+                    context.arc(450, canvas.height / 2, 70, 0, Math.PI * 2, true);
+                    context.fillStyle = "red";
+                    context.fill();
+                    context.stroke();
+                    
+                    this.addRegionEventListener("mousedown", function(){
+                        message = "Mousedown red circle!";
+                    });
+                    this.addRegionEventListener("mouseup", function(){
+                        message = "Mouseup red circle!";
+                    });
+                    this.addRegionEventListener("mouseover", function(){
+                        message = "Mouseover red circle!";
+                    });
+                    this.addRegionEventListener("mouseout", function(){
+                        message = "Mouseout red circle!";
+                    });
+                    
+                    this.closeRegion();
+					
+					writeMessage(context, message);
+                });
+				
+				// since we set the draw stage function, the listen()
+				// method is automatically called for us
+            };
+        </script>
+    </head>
+    <body>
+        <canvas id="myCanvas" width="600" height="250" style="border:1px solid black;">
+        </canvas>
+    </body>
+</html>

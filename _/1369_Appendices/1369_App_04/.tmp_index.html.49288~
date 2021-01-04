@@ -1,0 +1,87 @@
+<!DOCTYPE>
+<head>
+    <style>
+        body {
+            margin: 0px;
+            padding: 0px;
+        }
+        
+        #myCanvas {
+            border: 1px solid #9C9898;
+        }
+    </style>
+    <script>
+        function CanvasSupportDetails(){
+            this.supportDetails = {
+                // general
+                canvas: false,
+                webgl: false,
+                // contexts
+                context_2d: false,
+                context_webgl: false,
+                context_experimental_webgl: false,
+                context_moz_webgl: false,
+                context_webkit_3d: false
+            };
+            
+            // check if canvas is supported
+            if (!!document.createElement('canvas').getContext) {
+                this.supportDetails.canvas = true;
+            }
+            
+            // check if webGL is supported
+            if (window.WebGLRenderingContext) {
+                this.supportDetails.webgl = true;
+            }
+            
+            // check individual contexts
+            
+            var keys = ["context_2d", "context_webgl", "context_experimental_webgl", "context_moz_webgl", "context_webkit_3d"];
+            var contexts = ["2d", "webgl", "experimental-webgl", "moz-webgl", "webkit-3d"];
+            
+            
+            for (var n = 0; n < keys.length; n++) {
+                var thisKey = keys[n];
+                var thisContext = contexts[n];
+                
+                try {
+                    if (!!document.createElement('canvas').getContext(thisContext)) {
+                        this.supportDetails[thisKey] = true;
+                    }
+                } 
+                catch (e) {
+                }
+            }
+        }
+        
+        CanvasSupportDetails.prototype.toHTML = function(){
+            var str = "";
+            
+            str += "-- Browser Support --<br>";
+            str += "canvas: " + (this.supportDetails.canvas ? "YES" : "NO") + "<br>";
+            str += "webgl: " + (this.supportDetails.webgl ? "YES" : "NO") + "<br>";
+            
+            str += "<br>-- Successfully Initialized Contexts --<br>";
+            str += "2d: " + (this.supportDetails.context_2d ? "YES" : "NO") + "<br>";
+            str += "webgl: " + (this.supportDetails.context_webgl ? "YES" : "NO") + "<br>";
+            str += "experimental-webgl: " + (this.supportDetails.context_experimental_webgl ? "YES" : "NO") + "<br>";
+            str += "moz-webgl: " + (this.supportDetails.context_moz_webgl ? "YES" : "NO") + "<br>";
+            str += "webkit-3d: " + (this.supportDetails.context_webkit_3d ? "YES" : "NO") + "<br>";
+            
+            return str;
+        };
+        
+        window.onload = function(){
+            var canvasSupportDetails = new CanvasSupportDetails();
+			
+            document.write(canvasSupportDetails.toHTML());
+        }
+    </script>
+</head>
+<html>
+    <body>
+        <canvas id="myCanvas" width="578" height="250">
+            Yikes!  Your browser doesn't support canvas.  Try using Google Chrome or Firefox instead.
+        </canvas>
+    </body>
+</html>

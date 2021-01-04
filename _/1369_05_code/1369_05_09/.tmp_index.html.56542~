@@ -1,0 +1,126 @@
+<html>
+<head>
+<script src="animation.js"></script>
+<script>
+
+// physics globals
+var gravity = 20; // pixels / second^2
+var collisionDamper = 0.8; // 80% energy loss
+var floorFriction = 2.5; // pixels / second^2
+
+function Particle(x,y,vx,vy,radius) {
+	this.x=x;
+	this.y=y;
+	this.vx=vx;
+	this.vy=vy;
+	this.radius=radius;
+}
+
+function updateParticle(canvas, myParticle,
+	speedIncrementFromGravityEachFrame, 
+	floorFrictionSpeedReduction) {
+	
+	// gravity
+	myParticle.vy+=speedIncrementFromGravityEachFrame;
+			
+	myParticle.y+=myParticle.vy;
+	myParticle.x+=myParticle.vx;
+	
+	// floor condition
+	if (myParticle.y > (canvas.height-myParticle.radius)) {
+		myParticle.y=canvas.height-myParticle.radius;
+		myParticle.vy*=-1; 
+		myParticle.vy*=collisionDamper;
+	}
+	
+	// floor friction
+	if (myParticle.y == canvas.height-myParticle.radius) {
+		if (myParticle.vx>0.1) {
+			myParticle.vx-=floorFrictionSpeedReduction;
+		}
+		else if (myParticle.vx<-0.1) {
+			myParticle.vx+=floorFrictionSpeedReduction;
+		}
+		else {
+			myParticle.vx=0;
+		}
+	}
+
+	// celing  condition
+	if (myParticle.y < (myParticle.radius)) {
+		myParticle.y=myParticle.radius;
+		myParticle.vy*=-1; 
+		myParticle.vy*=collisionDamper;
+	}
+	
+	// right wall condition
+	if (myParticle.x > (canvas.width-myParticle.radius)) {
+		myParticle.x=canvas.width-myParticle.radius;
+		myParticle.vx*=-1;
+		myParticle.vx*=collisionDamper;
+	}
+	
+	// left wall condition
+	if (myParticle.x < (myParticle.radius)) {
+		myParticle.x=myParticle.radius;
+		myParticle.vx*=-1;
+		myParticle.vx*=collisionDamper;
+	}	
+}
+
+window.onload = function() {
+	var canvas=document.getElementById("myCanvas");
+
+	// instantiate new animation object
+	var myAnimation = new Animation(canvas, 100);
+	
+	var timeInterval = myAnimation.getTimeInterval();
+	
+	// particle globals
+	var x = 10;
+	var y = canvas.height-10;
+	var vx = 480 * timeInterval / 1000; // 480 px / second
+	var vy = -900 * timeInterval / 1000; // -900 px / second
+	var radius = 10;
+	
+	var myParticle = new Particle(x,y,vx,vy,radius);
+
+	var speedIncrementFromGravityEachFrame = gravity * 
+		timeInterval / 1000; // pixels / ms
+
+	var floorFrictionSpeedReduction = floorFriction*
+		timeInterval / 1000; // pixels / ms
+	
+	myAnimation.setUpdateStage(function() {
+		updateParticle(canvas,myParticle,
+			speedIncrementFromGravityEachFrame,
+			floorFrictionSpeedReduction);	
+
+		// if particle is no longer moving, and is on the floor, then 
+		// stop animation
+		if (myParticle.vx==0 && myParticle.vy>-0.1 && myParticle.vy <0.1
+			&& myParticle.y == canvas.height-myParticle.radius) {
+			myAnimation.stop();
+		}
+	});
+	
+	myAnimation.setDrawStage(function() {
+		// draw particle
+		var context=myAnimation.getContext();
+		context.beginPath();
+		context.arc(myParticle.x,myParticle.y,
+			myParticle.radius,0,2*Math.PI,false);
+		context.fillStyle="blue";
+		context.fill();
+	});
+	
+	myAnimation.start();
+}
+
+</script>
+</head>
+<body>
+	<canvas id="myCanvas" width="638" height="250" 
+		style="border:1px solid black;"></canvas>
+</body>
+</html>

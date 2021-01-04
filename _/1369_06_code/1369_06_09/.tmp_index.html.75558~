@@ -1,0 +1,90 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=0.552, user-scalable=no"/>
+        <script src="events.js">
+        </script>
+        <script>
+            function writeMessage(events, message){
+                var context = events.getContext();
+                context.font = "18pt Calibri";
+                context.fillStyle = "black";
+                context.fillText(message, 10, 25);
+            }
+            
+            window.onload = function(){
+                var events = new Events("myCanvas");
+                var message = "";
+                
+                events.setDrawStage(function(){
+                    this.clear();
+                    var canvas = this.getCanvas();
+                    var context = this.getContext();
+                    // draw blue triangle
+                    this.beginRegion();
+                    context.beginPath();
+                    context.lineWidth = 4;
+                    context.strokeStyle = "black";
+                    context.fillStyle = "#00D2FF";
+                    context.moveTo(50, 50);
+                    context.lineTo(180, 80);
+                    context.lineTo(80, 170);
+                    context.closePath();
+                    context.fill();
+                    context.stroke();
+                    
+                    this.addRegionEventListener("touchmove", function(){
+                        var touchPos = events.getTouchPos();
+                        
+                        if (touchPos !== null) {
+                            var touchX = touchPos.x - 20;
+                            var touchY = touchPos.y - 50;
+                            
+                            message = "Triangle touch position: " + touchX +
+                            "," +
+                            touchY;
+                        }
+                    });
+                    
+                    this.closeRegion();
+                    
+                    // draw yellow rectangle
+                    // this is an example of a shape
+                    // with no event listeners
+                    context.beginPath();
+                    context.lineWidth = 4;
+                    context.strokeStyle = "black";
+                    context.fillStyle = "yellow";
+                    context.rect(200, 65, 150, 75);
+                    context.fill();
+                    context.stroke();
+                    
+                    // draw red circle
+                    this.beginRegion();
+                    context.beginPath();
+                    context.arc(450, canvas.height / 2, 70, 0, Math.PI * 2, true);
+                    context.fillStyle = "red";
+                    context.fill();
+                    context.stroke();
+                    
+                    this.addRegionEventListener("touchstart", function(){
+                        message = "Touchstart red circle!";
+                    });
+                    
+                    this.addRegionEventListener("touchend", function(){
+                        message = "Touchend red circle!";
+                    });
+                    
+                    this.closeRegion();
+                    
+                    // display event
+                    writeMessage(this, message);
+                });
+            };
+        </script>
+    </head>
+    <body>
+        <canvas id="myCanvas" width="600" height="250" style="border:1px solid black;">
+        </canvas>
+    </body>
+</html>

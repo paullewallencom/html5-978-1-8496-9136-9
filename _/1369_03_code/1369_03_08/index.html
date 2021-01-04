@@ -1,0 +1,79 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <script>
+            function focusImage(canvas, context, imageObj, pixelation){
+                var sourceWidth = imageObj.width;
+                var sourceHeight = imageObj.height;
+                var sourceX = canvas.width / 2 - sourceWidth / 2;
+                var sourceY = canvas.height / 2 - sourceHeight / 2;
+                var destX = sourceX;
+                var destY = sourceY;
+                
+                var imageData = context.getImageData(sourceX, sourceY, sourceWidth, sourceHeight);
+                var data = imageData.data;
+                
+                for (var y = 0; y < sourceHeight; y += pixelation) {
+                    for (var x = 0; x < sourceWidth; x += pixelation) {
+                        // get the color components of the sample pixel
+                        var red = data[((sourceWidth * y) + x) * 4];
+                        var green = data[((sourceWidth * y) + x) * 4 + 1];
+                        var blue = data[((sourceWidth * y) + x) * 4 + 2];
+                        
+                        // overwrite pixels in a square below and to
+                        // the right of the sample pixel, whos width and
+                        // height are equal to the pixelation amount
+                        for (var n = 0; n < pixelation; n++) {
+                            for (var m = 0; m < pixelation; m++) {
+                                if (x + m < sourceWidth) {
+                                    data[((sourceWidth * (y + n)) + (x + m)) * 4] = red;
+                                    data[((sourceWidth * (y + n)) + (x + m)) * 4 + 1] = green;
+                                    data[((sourceWidth * (y + n)) + (x + m)) * 4 + 2] = blue;
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                // overwrite original image
+                context.putImageData(imageData, destX, destY);
+            }
+            
+            window.onload = function(){
+                var canvas = document.getElementById("myCanvas");
+                var context = canvas.getContext("2d");
+                var fps = 20; // frames / second
+                var timeInterval = 1000 / fps; // milliseconds
+                                
+                // define initial pixelation.  The higher the value,
+                // the more pixelated the image is.  The image is
+                // perfectly focused when pixelation = 1;
+                var pixelation = 40;
+                
+                var imageObj = new Image();
+                imageObj.onload = function(){
+                    var sourceWidth = imageObj.width;
+                    var sourceHeight = imageObj.height;
+                    var destX = canvas.width / 2 - sourceWidth / 2;
+                    var destY = canvas.height / 2 - sourceHeight / 2;
+                    
+                    var intervalId = setInterval(function(){
+                        context.drawImage(imageObj, destX, destY);
+                        
+                        if (pixelation < 1) {
+                            clearInterval(intervalId);
+                        }
+                        else {
+                            focusImage(canvas, context, imageObj, pixelation--);
+                        }
+                    }, timeInterval);
+                };
+                imageObj.src = "jet_300x214.jpg";
+            };
+        </script>
+    </head>
+    <body>
+        <canvas id="myCanvas" width="600" height="250" style="border:1px solid black;">
+        </canvas>
+    </body>
+</html>
